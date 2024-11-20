@@ -6,6 +6,7 @@ import { NextResponse } from "next/server";
 export const POST = async (request) => {
   try {
     await connect();
+    console.log("Connection established with database")
     const { email, password } = await request.json();
 
     if (!email || !password) {

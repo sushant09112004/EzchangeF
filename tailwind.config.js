@@ -7,6 +7,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'custom-purple': '#8E5ACC',
+        'custom-purple2': '#AC7CE5',
+        'custom-purple3': '#CDA3FF',
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":

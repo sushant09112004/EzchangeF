@@ -56,8 +56,8 @@ const Login = () => {
   }
 
   return (
-    <div className="flex justify-center items-center h-screen">
-      <div className="bg-black border-2 border-white p-6 rounded-xl shadow-lg max-w-2xl w-full relative">
+    <div className="bg-[url('/blur-bg.svg')] bg-cover flex justify-center items-center h-screen">
+      <div className="bg-black  p-6 rounded-xl shadow-lg max-w-2xl w-full relative">
         <button
           onClick={() => router.push('/')}
           className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
