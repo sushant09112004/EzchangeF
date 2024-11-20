@@ -1,39 +1,63 @@
-"use client"
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { signIn, getSession } from 'next-auth/react';
+"use client";
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Spinner from "../components/Spinner";
 
-export default function LoginPage() {
+const Login = () => {
   const router = useRouter();
+  const [error, setError] = useState("");
+  // const session = useSession();
+  const { data: session, status: sessionStatus } = useSession();
 
   useEffect(() => {
-    const checkSession = async () => {
-      const session = await getSession();
-      if (session) {
-        router.push('/');
-      }
-    };
-    checkSession();
-  }, [router]);
+    if (sessionStatus === "authenticated") {
+        router.replace("/");
+    }
+  }, [sessionStatus, router]);
 
-  const handleSignIn = async (e) => {
+  const isValidEmail = (email) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
+    const email = e.target[0].value;
+    const password = e.target[1].value;
 
-    try {
-      await signIn('credentials', { email, password, redirect: false });
-      router.push('/');
-    } catch (error) {
-      console.error('Sign in error:', error);
-      // Handle sign-in error (display message, etc.)
+    if (!isValidEmail(email)) {
+      setError("Email is invalid");
+      return;
+    }
+
+    if (!password || password.length < 8) {
+      setError("Password is invalid");
+      return;
+    }
+
+    const res = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (res?.error) {
+      setError("Invalid email or password");
+      if (res?.url) router.replace(res.url);
+    } else {
+      setError("");
     }
   };
 
+  if (sessionStatus === 'loading') {
+    return <Spinner />;
+  }
+
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-gray-800 p-6 rounded shadow-lg max-w-2xl w-full relative">
+      <div className="bg-black border-2 border-white p-6 rounded-xl shadow-lg max-w-2xl w-full relative">
         <button
           onClick={() => router.push('/')}
           className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
@@ -54,8 +78,8 @@ export default function LoginPage() {
             <img src="/pattern-img.svg" alt="Features" className="w-full h-auto" />
           </div>
           <div className="md:w-1/2 p-4">
-            <h2 className="text-xl text-center mb-5">Welcome to FinAdvise</h2>
-            <form onSubmit={handleSignIn} className="space-y-4">
+            <h2 className="text-xl text-center mb-5">Login to your Account</h2>
+            <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="email"
                 name="email"
@@ -71,8 +95,9 @@ export default function LoginPage() {
                 className="w-full p-2 border rounded text-black"
               />
               <button type="submit" className="bg-purple-600 font-semibold w-full py-2 rounded text-white">
-                Continue
+                Login
               </button>
+              <p className="text-red-600 text-[16px] mb-4">{error && error}</p>
             </form>
             <p className="text-center mt-4"> Or </p>
             <div className="mt-4">
@@ -89,4 +114,6 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

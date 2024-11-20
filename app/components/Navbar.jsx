@@ -12,25 +12,37 @@ export default function Navbar() {
   };
 
   return (
-    <div className="bg-gray-800 text-white">
+    <div className="bg-black text-white">
       <nav className="container mx-auto p-4 flex justify-between items-center">
         <div className="flex items-center space-x-4">
-          <img src="/logo.png" alt="FinAdvise Logo" className="h-8 w-8" />
-          <span className="font-bold text-xl">FinAdvise</span>
+          <Link href="/"
+             className="flex items-center space-x-2">
+              <img src="/logo.png" alt="FinAdvise Logo" className="h-8 w-8" />
+              <span className="font-bold text-xl">FinAdvise</span>
+            
+          </Link>
         </div>
-        <div className="hidden md:flex space-x-4">
-          <Link href="#feature1">Personalized Recommendations</Link>
-          <Link href="#feature2">Expense Tracker</Link>
-          <Link href="#feature3">Finance News</Link>
-          <Link href="#feature4">Reminders</Link>
+        <div className="hidden md:flex space-x-4 font-semibold">
+          <Link href="#feature1"
+            className="hover:text-purple-500 transition-colors duration-300">Personalized Recommendations
+          </Link>
+          <Link href="#feature2"
+            className="hover:text-purple-500 transition-colors duration-300">Expense Tracker
+          </Link>
+          <Link href="#feature3"
+            className="hover:text-purple-500 transition-colors duration-300">Finance News
+          </Link>
+          <Link href="#feature4"
+            className="hover:text-purple-500 transition-colors duration-300">Reminders
+          </Link>
         </div>
         {!session ? (
           <div className="hidden md:flex space-x-4">
-            <Link href="/login">
-              <button className="bg-purple-700 font-semibold px-4 py-2 rounded">Login</button>
+            <Link href="/login"
+              className="bg-white text-black font-semibold px-3 py-2 rounded-lg hover:bg-purple-500 hover:text-white transition-colors duration-300">Login
             </Link>
-            <Link href="/signup">
-              <button className="bg-purple-700 font-semibold px-4 py-2 rounded">Sign Up</button>
+            <Link href="/signup"
+              className="bg-white text-black font-semibold px-3 py-2 rounded-lg hover:bg-purple-500 hover:text-white transition-colors duration-300">Sign Up
             </Link>
           </div>
         ) : (
@@ -38,7 +50,7 @@ export default function Navbar() {
             <span>{session.user?.email}</span>
             <button
               onClick={() => signOut()}
-              className="bg-purple-700 font-semibold px-4 py-2 rounded"
+              className="bg-white text-black font-semibold px-4 py-2 rounded hover:bg-purple-500  hover:text-white transition-colors duration-300"
             >
               Logout
             </button>
@@ -52,23 +64,31 @@ export default function Navbar() {
       </nav>
       {isMenuOpen && (
         <div className="md:hidden flex flex-col space-y-4 p-4">
-          <Link href="#feature1">Personalized Recommendations</Link>
-          <Link href="#feature2">Expense Tracker</Link>
-          <Link href="#feature3">Finance News</Link>
-          <Link href="#feature4">Reminders</Link>
+          <Link href="#feature1"
+            className="hover:text-purple-500 transition-colors duration-300">Personalized Recommendations
+          </Link>
+          <Link href="#feature2"
+            className="hover:text-purple-500 transition-colors duration-300">Expense Tracker
+          </Link>
+          <Link href="#feature3"
+            className="hover:text-purple-500 transition-colors duration-300">Finance News
+          </Link>
+          <Link href="#feature4"
+            className="hover:text-purple-500 transition-colors duration-300">Reminders
+          </Link>
           {!session ? (
             <>
-              <Link href="/login">
-                <button className="bg-purple-700 font-semibold px-4 py-2 rounded">Login</button>
+              <Link href="/login"
+                className="bg-white text-black font-semibold px-3 py-2 rounded-lg hover:bg-purple-500 hover:text-white transition-colors duration-300">Login
               </Link>
-              <Link href="/signup">
-                <button className="bg-purple-700 font-semibold px-4 py-2 rounded">Sign Up</button>
+              <Link href="/signup"
+                className="bg-white text-black font-semibold px-3 py-2 rounded-lg hover:bg-purple-500 hover:text-white transition-colors duration-300">Sign Up
               </Link>
             </>
           ) : (
             <>
               <span>{session.user?.email}</span>
-              <button onClick={() => signOut()} className="bg-purple-700 font-semibold px-4 py-2 rounded">Logout</button>
+              <button onClick={() => signOut()} className="bg-white text-black font-semibold px-4 py-2 rounded hover:bg-purple-500  hover:text-white transition-colors duration-300">Logout</button>
             </>
           )}
         </div>

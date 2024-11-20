@@ -1,11 +1,16 @@
-"use client"
+"use client";
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, getSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
+import Spinner from "../components/Spinner";
 
-export default function RegisterPage() {
+const Register = () => {
   const router = useRouter();
-
+  const [error, setError] = useState("");
+  const { data: session, status: sessionStatus } = useSession();
+  
   useEffect(() => {
     const checkSession = async () => {
       const session = await getSession();
@@ -16,26 +21,54 @@ export default function RegisterPage() {
     checkSession();
   }, [router]);
 
-  const handleSignUp = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const email = formData.get('email');
-    const password = formData.get('password');
-
-    try {
-      // Handle signup logic, e.g., create user in database
-      // For demo purposes, we're using sign in after signup for simplicity
-      await signIn('credentials', { email, password, redirect: false });
-      router.push('/');
-    } catch (error) {
-      console.error('Sign up error:', error);
-      // Handle sign-up error (display message, etc.)
-    }
+  const isValidEmail = (email) => {
+    const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+    return emailRegex.test(email);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    if (!isValidEmail(email)) {
+      setError("Invalid Email");
+      return;
+    }
+
+    if (!password || password.length < 8) {
+      setError("Invalid Password");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (res.status === 400) {
+        setError("This email is already registered");
+      } else if (res.status === 201) {
+        setError("");
+        router.push("/login");
+      } else {
+        setError("Error, try again");
+      }
+    } catch (error) {
+      setError("Error, try again");
+      console.log(error);
+    }
+  };
+  if (sessionStatus === 'loading') {
+    return <Spinner />;
+  }
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-gray-800 p-6 rounded shadow-lg max-w-2xl w-full relative">
+      <div className="bg- border-2 border-white  p-6 rounded-xl shadow-lg max-w-2xl w-full relative">
         <button
           onClick={() => router.push('/')}
           className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
@@ -57,13 +90,13 @@ export default function RegisterPage() {
           </div>
           <div className="md:w-1/2 p-4">
             <h2 className="text-xl text-center mb-5">Create an Account</h2>
-            <form onSubmit={handleSignUp} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <input
                 type="email"
                 name="email"
                 placeholder="Email"
                 required
-                className="w-full p-2 border rounded"
+                className="w-full p-2 border rounded text-black"
               />
               <input
                 type="password"
@@ -73,8 +106,9 @@ export default function RegisterPage() {
                 className="w-full p-2 border rounded text-black"
               />
               <button type="submit" className="bg-purple-600 font-semibold w-full py-2 rounded text-white">
-                Register
+                Sign Up
               </button>
+              <p className="text-red-600 text-[16px] mb-4">{error && error}</p>
             </form>
             <p className="text-center mt-4"> Or </p>
             <div className="mt-4">
@@ -91,4 +125,6 @@ export default function RegisterPage() {
       </div>
     </div>
   );
-}
+};
+
+export default Register;

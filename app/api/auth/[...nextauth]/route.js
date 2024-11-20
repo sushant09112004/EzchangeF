@@ -1,8 +1,8 @@
-import NextAuth from "next-auth";
-import { Account, User as AuthUser } from "next-auth";
+import NextAuth from "next-auth"
+// import {Account , User as AuthUser } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
+import bcrypt from "bcrypt";
 import CredentialsProvider from "next-auth/providers/credentials";
-// import bcrypt from "bcryptjs";
 import User from "../../../../models/User";
 import connect from "../../../../utils/db";
 
@@ -30,15 +30,14 @@ export const authOptions = {
             }
           }
         } catch (err) {
-          throw new Error(err);
+            throw new Error(err);
         }
       },
     }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    }),
-    // ...add more providers here
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+    })
   ],
   callbacks: {
     async signIn({ user, account }) {
@@ -66,5 +65,6 @@ export const authOptions = {
     },
   },
 };
+
 export const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
